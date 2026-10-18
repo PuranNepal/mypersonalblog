@@ -6,6 +6,7 @@ const entries = defineCollection({
     title: z.string(), description: z.string(), date: z.coerce.date(),
     kind: z.enum(['articles', 'signals', 'books']), tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false), author: z.string().optional(),
+    thumbnail: z.string().optional(), thumbnailAlt: z.string().optional(),
   }),
 });
 export const collections = { entries };
