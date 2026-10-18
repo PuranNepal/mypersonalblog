@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import EntryList from '../components/EntryList.astro';
+import ProbabilitySketch from '../components/ProbabilitySketch.astro';
+import { allEntries, entryUrl } from '../lib/content';
+const entries = await allEntries();
+const featured = entries.find(e => e.data.kind === 'articles')!;
+---
+<Base>
+  <section class="intro"><p class="eyebrow">A PERSONAL CORNER OF THE INTERNET</p><h1>Following curiosity.<br/>Making a little <em>sense.</em></h1><p class="lede">Essays on probability, technology, and the everyday.<br class="desktop-break"/> Small observations. Good books. Mostly, better questions.</p><a class="text-link" href="/about/">A little about this notebook <span>↗</span></a><span class="issue">EST. 2026<br/>ALWAYS A DRAFT</span></section>
+  <section class="feature"><div><p class="eyebrow">THE LATEST ESSAY <span>01</span></p><h2><a href={entryUrl(featured)}>{featured.data.title}</a></h2><p>{featured.data.description}</p><a class="text-link" href={entryUrl(featured)}>Settle in and read <span>→</span></a></div><div class="feature-art"><ProbabilitySketch/><span class="caption">FIG. 01 — CHANGING YOUR MIND IS THE POINT.</span></div></section>
+  <section class="recent"><div class="section-heading"><h2>Fresh pages</h2><a href="/articles/">All articles →</a></div><EntryList entries={entries.filter(e => e.id !== featured.id).slice(0, 4)}/></section>
+  <aside class="end-note"><span class="asterisk" aria-hidden="true">✳</span><div><h2>A notebook, not a news feed.</h2><p>No rush to keep up. Just a few things worth thinking about.</p></div><a href="/signals/">Explore the signals →</a></aside>
+</Base>

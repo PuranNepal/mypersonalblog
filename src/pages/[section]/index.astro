@@ -1,0 +1,13 @@
+---
+import Base from '../../layouts/Base.astro';
+import EntryList from '../../components/EntryList.astro';
+import { allEntries } from '../../lib/content';
+export function getStaticPaths() { return [
+  { params: { section: 'articles' }, props: { title: 'Articles', subtitle: 'Longer threads of thought.', description: 'Essays on probability, technology, and learning to ask better questions.' } },
+  { params: { section: 'signals' }, props: { title: 'Signals', subtitle: 'Small things. Lasting questions.', description: 'Brief observations, unfinished ideas, and things noticed along the way.' } },
+  { params: { section: 'books' }, props: { title: 'Books', subtitle: 'Notes from the margins.', description: 'A small reading shelf, with the ideas that stayed after the last page.' } },
+]; }
+const { title, subtitle, description } = Astro.props;
+const entries = (await allEntries()).filter(e => e.data.kind === Astro.params.section);
+---
+<Base title={title} description={description}><section class="page-intro"><p class="eyebrow">THE NOTEBOOK / {title.toUpperCase()}</p><h1>{title}<span class="count">({String(entries.length).padStart(2, '0')})</span></h1><h2 class="subtitle">{subtitle}</h2><p class="lede">{description}</p></section><EntryList entries={entries}/><p class="sample-note">Sample entries for the first edition. More pages to come.</p></Base>

@@ -1,0 +1,18 @@
+---
+import '../styles/global.css';
+const { title = 'A notebook for curious minds', description = 'Sample essays, small observations, and notes from the bookshelf.' } = Astro.props;
+const links = [['/', 'Home'], ['/articles/', 'Articles'], ['/signals/', 'Signals'], ['/books/', 'Books'], ['/about/', 'About'], ['/search/', 'Search']];
+---
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width" /><meta name="description" content={description} /><meta name="theme-color" content="#f7f5ef" /><title>{title} · André’s Notebook</title><link rel="icon" href="/favicon.svg" type="image/svg+xml" /></head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header wrap">
+      <a class="brand" href="/" aria-label="André’s Notebook home"><span class="brand-icon" aria-hidden="true">a<span>.</span></span><span>ANDRÉ’S NOTEBOOK<small>Ideas worth sitting with.</small></span></a>
+      <nav aria-label="Main navigation">{links.map(([href, label]) => <a href={href} aria-current={(href === '/' ? Astro.url.pathname === '/' : Astro.url.pathname.startsWith(href)) ? 'page' : undefined}>{label}{label === 'Search' && <span aria-hidden="true"> ↗</span>}</a>)}</nav>
+    </header>
+    <main id="main" class="wrap"><slot /></main>
+    <footer class="wrap"><span>André’s Notebook <span aria-hidden="true">·</span> A work in progress.</span><span>Made slowly. Read at your own pace.</span><small>Local first version · All writing is sample content.</small></footer>
+  </body>
+</html>

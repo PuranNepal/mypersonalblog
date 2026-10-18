@@ -1,0 +1,5 @@
+---
+import { entryUrl, formatDate, labels, type Entry } from '../lib/content';
+const { entries } = Astro.props as { entries: Entry[] };
+---
+<div class="entry-list">{entries.map(entry => <article class="entry-row"><div class="entry-date"><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time><span>{labels[entry.data.kind]}</span></div><div><div class="tags">{entry.data.tags.join(' / ')}</div><h2><a href={entryUrl(entry)}>{entry.data.title}</a></h2><p>{entry.data.description}</p></div><a class="row-arrow" href={entryUrl(entry)} aria-label={`Read ${entry.data.title}`}>↗</a></article>)}</div>

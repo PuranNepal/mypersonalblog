@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { allEntries, entryUrl, labels } from '../lib/content';
+const entries = (await allEntries()).map(e => ({ title: e.data.title, description: e.data.description, kind: labels[e.data.kind], url: entryUrl(e), text: [e.data.title, e.data.description, ...e.data.tags, e.body].join(' ').toLowerCase() }));
+---
+<Base title="Search"><section class="page-intro"><p class="eyebrow">FOLLOW A THREAD</p><h1>Find something <em>interesting.</em></h1><p class="lede">Search articles, signals, and notes from the bookshelf.</p></section><form class="search-form" role="search"><label for="query">What’s on your mind?</label><div class="search-input"><input id="query" name="q" type="search" placeholder="Try “probability” or “attention”" autocomplete="off"/><button type="submit">Search →</button></div></form><p id="search-status" role="status" aria-live="polite"></p><div id="results" class="search-results"></div><noscript><p>Search needs JavaScript. You can browse <a href="/articles/">Articles</a>, <a href="/signals/">Signals</a>, and <a href="/books/">Books</a> instead.</p></noscript><script define:vars={{ entries }}>
+const form = document.querySelector('.search-form');
+const input = document.querySelector('#query');
+const results = document.querySelector('#results');
+const status = document.querySelector('#search-status');
+function search() {
+  const query = input.value.trim();
+  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const matches = entries.filter(entry => words.every(word => entry.text.includes(word)));
+  status.textContent = query ? `${matches.length} result${matches.length === 1 ? '' : 's'} for “${query}”` : 'All pages in the notebook. Type to narrow things down.';
+  results.replaceChildren();
+  for (const entry of matches) {
+    const article = document.createElement('article');
+    const kind = document.createElement('span'); kind.className = 'eyebrow'; kind.textContent = entry.kind;
+    const heading = document.createElement('h2'); const link = document.createElement('a'); link.href = entry.url; link.textContent = entry.title; heading.append(link);
+    const description = document.createElement('p'); description.textContent = entry.description;
+    article.append(kind, heading, description); results.append(article);
+  }
+  if (!matches.length) { const message = document.createElement('p'); message.textContent = 'No pages found. Try a broader word, such as “learning” or “books”.'; results.append(message); }
+}
+input.value = new URLSearchParams(location.search).get('q') || '';
+input.addEventListener('input', search);
+form.addEventListener('submit', event => { event.preventDefault(); const url = new URL(location.href); if (input.value.trim()) url.searchParams.set('q', input.value.trim()); else url.searchParams.delete('q'); history.replaceState(null, '', url); search(); });
+search();
+</script></Base>
